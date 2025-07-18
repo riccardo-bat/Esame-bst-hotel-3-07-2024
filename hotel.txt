@@ -1,0 +1,22 @@
+7
+3
+Al parco
+Firenze
+4
+Lo specchio
+Bologna
+2
+Il portico
+Firenze
+3
+Carlo Alberto
+Bologna
+1
+Il tortellino
+Bologna
+5
+Michelangelo
+Firenze
+5
+Piazza Nettuno
+Bologna
