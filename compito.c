@@ -89,45 +89,54 @@ char* string_input(char* msg, int max_length){
  * @param hotels 
  * @param filename 
  */
-void load_bst_from_file(bst* hotels, char* filename) {
-    FILE* fp = fopen(filename, "r");
-    if (!fp) { perror("fopen"); exit(EXIT_FAILURE); }
+void load_bst_from_file(bst* hotels, char* filename){
+    bst tmp_hotels = *hotels;
+    char* mode = "r";
 
-    char buffer[128];
-    // 1) totHotels
-    if (!fgets(buffer, sizeof buffer, fp)) { perror("fgets"); fclose(fp); exit(EXIT_FAILURE); }
+    FILE* fp_hotel = fopen(filename, mode);
+    if(!fp_hotel){printf("\nERRORE"); exit(EXIT_FAILURE);}
+
+    //leggo il file
+    char buffer[100]; 
+
+    //la prima riga contiene il numero totale di hotel da leggere
+    if(fgets(buffer, 100, fp_hotel) == NULL){printf("\nERRORE"); fclose(fp_hotel); exit(EXIT_FAILURE);}
     buffer[strcspn(buffer, "\r\n")] = '\0';
-    int totHotels;
-    if (sscanf(buffer, "%d", &totHotels) != 1) { fprintf(stderr, "Formato iniziale non valido: \"%s\"\n", buffer); fclose(fp); exit(EXIT_FAILURE); }
+    int totHotels; 
+    if(sscanf(buffer, " %d", &totHotels) != 1){printf("\nRIGA NON VALIDA"); fclose(fp_hotel); exit(EXIT_FAILURE);}
+    //printf("\nHotel totali: %d", totHotels);
 
-    bst tmp = *hotels;
-    for (int i = 0; i < totHotels; i++) {
-        tipo_key stelle;
-        tipo_inf info;
+    //posso leggere gli hotel
+    for(int i=1; i<=totHotels; i++){
+        //printf("\nLETTURA HOTEL %d", i);
+        //per ogni hotel leggo 3 righe 
+        tipo_key stelle = 0; 
+        tipo_inf tmp; 
 
-        // stelle
-        if (!fgets(buffer, sizeof buffer, fp)) { fprintf(stderr, "Manca riga stelle hotel %d\n", i+1); fclose(fp); exit(EXIT_FAILURE); }
+        //leggo le stelle
+        if(fgets(buffer, 100, fp_hotel) == NULL) {printf("\nERRORE"); fclose(fp_hotel); exit(EXIT_FAILURE);}
         buffer[strcspn(buffer, "\r\n")] = '\0';
-        if (sscanf(buffer, "%d", &stelle) != 1) { fprintf(stderr, "Stelle non valide: \"%s\"\n", buffer); fclose(fp); exit(EXIT_FAILURE); }
+        if(sscanf(buffer, " %d", &stelle) != 1){printf("\nRIGA NON VALIDA"); fclose(fp_hotel); exit(EXIT_FAILURE);}
 
-        // nome
-        if (!fgets(buffer, sizeof buffer, fp)) { fprintf(stderr, "Manca riga nome hotel %d\n", i+1); fclose(fp); exit(EXIT_FAILURE); }
+        //leggo il nome 
+        if(fgets(buffer, 100, fp_hotel) == NULL) {printf("\nERRORE"); fclose(fp_hotel); exit(EXIT_FAILURE);}
         buffer[strcspn(buffer, "\r\n")] = '\0';
-        strncpy(info.nome, buffer, sizeof info.nome - 1); info.nome[sizeof info.nome - 1] = '\0';
+        strcpy(tmp.nome, buffer);
 
-        // luogo
-        if (!fgets(buffer, sizeof buffer, fp)) { fprintf(stderr, "Manca riga luogo hotel %d\n", i+1); fclose(fp); exit(EXIT_FAILURE); }
+        //leggo il luogo
+        if(fgets(buffer, 100, fp_hotel) == NULL) {printf("\nERRORE"); fclose(fp_hotel); exit(EXIT_FAILURE);}
         buffer[strcspn(buffer, "\r\n")] = '\0';
-        strncpy(info.luogo, buffer, sizeof info.luogo - 1); info.luogo[sizeof info.luogo - 1] = '\0';
+        strcpy(tmp.luogo, buffer);
 
-        // inserimento
-        bst_insert(&tmp, bst_newNode(stelle, info));
+        //l'hotel letto lo inserisco nel bst 
+        //printf("\nInserisco l'hotel %s in %s a %d stelle", tmp.nome, tmp.luogo, stelle);
+        bst_insert(&tmp_hotels, bst_newNode(stelle, tmp));
+
     }
 
-    if (fclose(fp) == EOF) { perror("fclose"); exit(EXIT_FAILURE); }
-    *hotels = tmp;
+    if(fclose(fp_hotel) == EOF){printf("\nERRORE"); exit(EXIT_FAILURE);}
+    *hotels = tmp_hotels;
 }
-
 
 /**
  * @brief Procedura di stampa di un bst in ordine decrescente
@@ -190,6 +199,6 @@ int media(bst hotels, int threshold_stars, char* luogo){
     if(hotels == NULL) return 0;
 
     if(strcmp(hotels->inf.luogo, luogo) == 0 && hotels->key > threshold_stars)
-        return 1 + media(hotels->left, threshold_stars, luogo) + media(hotels->right, threshold_stars, luogo);       
+        return 1 + media(hotels->left, threshold_stars, luogo) + media(hotels->right, threshold_stars, luogo);
     return media(hotels->left, threshold_stars, luogo) + media(hotels->right, threshold_stars, luogo);
 }
