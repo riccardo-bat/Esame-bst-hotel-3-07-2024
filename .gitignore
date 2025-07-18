@@ -6,4 +6,6 @@
 *.html
 *.css
 *.js
-
+*.png
+*.svg
+*.dot

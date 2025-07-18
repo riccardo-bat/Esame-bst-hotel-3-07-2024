@@ -192,7 +192,12 @@ void ricerca(bst hotels, int threshold_stars, bool maggiori){
 int media(bst hotels, int threshold_stars, char* luogo){
     if(hotels == NULL) return 0;
 
-    if(strcmp(hotels->inf.luogo, luogo) == 0 && hotels->key > threshold_stars)
-        return 1 + media(hotels->left, threshold_stars, luogo) + media(hotels->right, threshold_stars, luogo);
-    return media(hotels->left, threshold_stars, luogo) + media(hotels->right, threshold_stars, luogo);
+    //se la root è minore della soglia, è inutile andare a dx
+    if(hotels->key < threshold_stars){
+        return media(hotels->left, threshold_stars, luogo);
+    } else{
+        if(strcmp(hotels->inf.luogo, luogo) == 0 && hotels->key > threshold_stars)
+            return 1 + media(hotels->left, threshold_stars, luogo) + media(hotels->right, threshold_stars, luogo);
+        else return media(hotels->left, threshold_stars, luogo) + media(hotels->right, threshold_stars, luogo);
+    }
 }
