@@ -29,10 +29,6 @@ int main(){
     printf("\nNumero di hotel con #stelle > %d situati a %s: %d", threshold_stars, luogo, media(hotels, threshold_stars, luogo));
 
 
-    //punto 2b
-
-
-
     printf("\n\n");
     return 0;
 }
@@ -77,9 +73,7 @@ char* string_input(char* msg, int max_length){
         printf("\nInput fallito\n");
     }
 
-    if(buffer[strlen(buffer) - 1] == '\n')
-        buffer[strlen(buffer) - 1] = '\0';
-
+    buffer[strcspn(buffer, "\r\n")] = '\0';
     return buffer;
 }
 
