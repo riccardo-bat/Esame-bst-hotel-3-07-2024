@@ -13,5 +13,5 @@ int compare(tipo_inf a, tipo_inf b){
 }
 
 void print_tipo_inf(tipo_inf obj){
-    printf("\nL'hotel %s, situato in %s", obj.nome, obj.luogo);
+    printf("\nL'hotel %s, situato a %s", obj.nome, obj.luogo);
 }
